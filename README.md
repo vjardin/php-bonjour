@@ -125,7 +125,7 @@ string bonjour_test2( [ string $var ];
 
 Let's call them from the PHP's CLI,
 
-```
+```console
 vj@p:~/php-bonjour$ php -d extension=modules/bonjour.so -a
 Interactive mode enabled
 
