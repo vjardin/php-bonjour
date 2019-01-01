@@ -140,3 +140,12 @@ php > quit
 ```
 
 Like any shell, the PHP's CLI has a support for completion using tabulation `[TAB]`.
+
+You can clean your folder using:
+
+```console
+vj@p:~/php-bonjour$ make clean
+vj@p:~/php-bonjour$ phpize --clean
+```
+
+Then, you are ready to re-compile everything.
