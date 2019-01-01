@@ -4,7 +4,7 @@ Demo of PHP module with shared code for Windows and Linux, thanks to `phpize` wt
 # start
 
 It is a demo about the usage of [ext_skel.php](https://github.com/php/php-src/blob/master/ext/ext_skel.php).
-This tool was signifcantly revamped and updates since PHP 7.3. It should be used to start a skeleton of PHP
+This tool was signifcantly revamped and updated since PHP 7.3. It should be used to start a skeleton of PHP
 extension that can run on both Linux (bonjour.so) and windows (php-bonjour.dll).
 
 # step 1
