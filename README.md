@@ -162,7 +162,7 @@ The following steps are extracted from [Microsoft's PHP]( https://github.com/Mic
 It will compile a fresh PHP (mine is PHP 7.4) from the main PHP git repository. Then, it will install a minimalist PHP interpretor into
 the folder `c:\php`. Be careful, it make overwrite your existing PHP environment.
 
-```console
+```dos
 cmd$ cd C:\
 C:\$ git clone https://github.com/Microsoft/php-sdk-binary-tools.git c:\php-sdk
 C:\$ cd c:\php-sdk
@@ -179,7 +179,7 @@ C:\php-sdk\phpbuild\vc15\x64\php-src$ nmake install
 
 Then, you can check your fresh PHP,
 
-```console
+```dos
 cmd$ cd c:\php
 C:\php$ php -v
 PHP 7.4.0-dev (cli) (built: Jan  1 2019 22:41:35) ( ZTS MSVC15 (Visual C++ 2017) x64 )
@@ -189,7 +189,7 @@ Zend Engine v3.4.0-dev, Copyright (c) 1998-2018 Zend Technologies
 
 Let's start with the usual Hello World example:
 
-```console
+```dos
 C:\php$ php -a
 Interactive shell
 
@@ -206,7 +206,7 @@ we'll reuse the same code that the on that was build for Linux. It is all about 
 sharing between both Linux and Windows.
 
 Our PHP environment should be:
-```console
+```dos
 C:\php$ dir /W
 [.]             [..]            [ext]           php-cgi.exe     php.exe         php7ts.dll      [SDK]
 
@@ -218,7 +218,7 @@ So, we have our `C:\php\SDK\phpize.bat` tool that can be used to generate the Ma
 Other folders are important tool. `lib` provides the library to link with. `include` provides the C header files
 that our extension (dll) will use during its compilation.
 
-```console
+```dos
 C:\php$ cd c:\php-sdk
 C:\php$ git clone https://github.com/vjardin/php-bonjour.git
 C:\php$ php-bonjour
@@ -276,7 +276,7 @@ C:\php\php-bonjour$ nmake install
 
 Then, you can run some manual tests using both PHP functions that are provided by the `php_bonjour.dll` extension:
 
-```console
+```dos
 C:\php-sdk\php-bonjour$ nmake run
 
 Microsoft (R) Program Maintenance Utility Version 14.16.27025.1
@@ -291,7 +291,7 @@ The extension bonjour is loaded and working!
 
 or assuming you are using your production environment,
 
-```console
+```dos
 C:\$ c:\php\php.exe -n -d extension=c:\php\ext\php_bonjour.dll
 <?php
 echo bonjour_test2("la Terre");
