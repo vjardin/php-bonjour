@@ -36,6 +36,13 @@ php -v
 PHP 7.2.10-0ubuntu0.18.04.1 (cli) (built: Sep 13 2018 13:45:02) ( NTS )
 Copyright (c) 1997-2018 The PHP Group
 
+vj@p:~/php-bonjour$ which phpize
+/usr/bin/phpize
+vj@p:~/php-bonjour$ ls -la /usr/bin/phpize
+lrwxrwxrwx 1 root root 24 Aug  1 00:55 /usr/bin/phpize -> /etc/alternatives/phpize
+vj@p:~/php-bonjour$ ls -la /etc/alternatives/phpize
+lrwxrwxrwx 1 root root 18 Aug  1 00:55 /etc/alternatives/phpize -> /usr/bin/phpize7.2
+
 vj@p:~/php-bonjour$ phpize
 vj@p:~/php-bonjour$ ./configure
 vj@p:~/php-bonjour$ make
