@@ -24,6 +24,12 @@
 #include "ext/standard/info.h"
 #include "php_bonjour.h"
 
+#ifndef ZEND_PARSE_PARAMETERS_NONE
+#define ZEND_PARSE_PARAMETERS_NONE()  \
+        ZEND_PARSE_PARAMETERS_START(0, 0) \
+        ZEND_PARSE_PARAMETERS_END()
+#endif /* ZEND_PARSE_PARAMETERS_NONE */
+
 /* {{{ void bonjour_test1()
  */
 PHP_FUNCTION(bonjour_test1)
