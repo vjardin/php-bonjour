@@ -1,0 +1,7 @@
+ARG_ENABLE('bonjour', 'bonjour support', 'no');
+
+if (PHP_BONJOUR != 'no') {
+	AC_DEFINE('HAVE_BONJOUR', 1, 'bonjour support enabled');
+
+	EXTENSION('bonjour', 'bonjour.c', null, '/DZEND_ENABLE_STATIC_TSRMLS_CACHE=1');
+}
