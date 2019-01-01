@@ -289,7 +289,7 @@ bonjour_test1();
 The extension bonjour is loaded and working!
 ```
 
-or assuming you are with your production environment,
+or assuming you are using your production environment,
 
 ```console
 C:\$ c:\php\php.exe -n -d extension=c:\php\ext\php_bonjour.dll
