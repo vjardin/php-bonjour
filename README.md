@@ -302,7 +302,7 @@ C:\php-sdk\php-bonjour
 
 # Tests
 
-The PHP build framework for extensions uses the script run-tests.php in order to execute all the set of tests.
+The PHP build framework for extensions uses the script `run-tests.php` in order to execute all the set of tests.
 We saw within the previous section that it can be called using:
 
 ```console
@@ -384,7 +384,7 @@ vj@p:~/php-bonjour$ cat $(ls tests/003.*)
 ```
 
 You can notice that you can re-run a specific test wihtout the test framework using the `.sh` file generated
-by run-tests.php
+by `run-tests.php`.
 
 ```console
 vj@p:~/php-bonjour$ tests/003.sh
