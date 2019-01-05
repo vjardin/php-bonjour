@@ -299,3 +299,101 @@ echo bonjour_test2("la Terre");
 Hello la Terre
 C:\php-sdk\php-bonjour
 ```
+
+# Tests
+
+The PHP build framework for extensions uses the script run-tests.php in order to execute all the set of tests.
+We saw within the previous section that it can be called using:
+
+```console
+vj@p:~/php-bonjour$ make test TESTS="tests/002.phpt tests/003.phpt"
+```
+
+However all the tests are run at once. You can run only one or a set of specific test using the `TESTS=` argument:
+
+```console
+vj@p:~/php-bonjour$ make test TESTS="tests/002.phpt"
+vj@p:~/php-bonjour$ make test TESTS="tests/002.phpt tests/003.phpt"
+```
+
+it will run only the test `002.phpt` or both the tests `002.phpt` and `003.phpt`.
+
+The same test framework and arguments are available for both Linux and Windows. Or course, with Windows,
+you need to use `nmake` instead of `make` and replace the '/' with a '\'.
+
+## Analyse a failing test
+
+If you want to understand how to analyse a failing test, let's change the test `003.phpt` so it will
+keep failing:
+
+```console
+vj@p:~/php-bonjour$ git diff
+diff --git a/tests/003.phpt b/tests/003.phpt
+index c025eba..4decf39 100644
+--- a/tests/003.phpt
++++ b/tests/003.phpt
+@@ -14,3 +14,4 @@ var_dump(bonjour_test2('PHP'));
+ --EXPECT--
+ string(11) "Hello World"
+ string(9) "Hello PHP"
++XXX
+```
+
+We add the `XXX` string at the and of the expected output of the test.
+
+Then, once you'll run it, it will fail:
+
+```console
+vj@p:~/php-bonjour$ make test TESTS=tests/003.phpt
+ ...
+=====================================================================
+Running selected tests.
+FAIL bonjour_test2() Basic test [tests/003.phpt]
+=====================================================================
+Number of tests :    1                 1
+Tests skipped   :    0 (  0.0%) --------
+Tests warned    :    0 (  0.0%) (  0.0%)
+Tests failed    :    1 (100.0%) (100.0%)
+Expected fail   :    0 (  0.0%) (  0.0%)
+Tests passed    :    0 (  0.0%) (  0.0%)
+---------------------------------------------------------------------
+Time taken      :    0 seconds
+=====================================================================
+
+=====================================================================
+FAILED TEST SUMMARY
+---------------------------------------------------------------------
+bonjour_test2() Basic test [tests/003.phpt]
+=====================================================================
+Makefile:133: recipe for target 'test' failed
+make: *** [test] Error 1
+```
+
+and you will have the following files that you can analyse:
+
+```console
+vj@p:~/php-bonjour$ ls tests/003.*
+tests/003.diff  tests/003.exp  tests/003.log  tests/003.out  tests/003.php  tests/003.phpt  tests/003.sh
+```
+
+You should open each of these files and review them.
+
+```console
+vj@p:~/php-bonjour$ cat $(ls tests/003.*)
+ ...
+```
+
+You can notice that you can re-run a specific test wihtout the test framework using the `.sh` file generated
+by run-tests.php
+
+```console
+vj@p:~/php-bonjour$ tests/003.sh
+string(11) "Hello World"
+string(9) "Hello PHP"
+```
+
+of course, on Windows, you have to adapt it a bit:
+
+```dos
+C:\$ c:\php\php.exe -n -d extension=x64\Release_TS\php_bonjour.dll -f "tests\003.php"
+```
