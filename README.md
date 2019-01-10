@@ -215,7 +215,7 @@ C:\php$ dir SDK /W
 ```
 
 So, we have our `C:\php\SDK\phpize.bat` tool that can be used to generate the Makefile for Windows Visual Studio environment.
-Other folders are important tool. `lib` provides the library to link with. `include` provides the C header files
+Other folders are important too: `lib` provides the library to link with, `include` provides the C header files
 that our extension (dll) will use during its compilation.
 
 ```dos
