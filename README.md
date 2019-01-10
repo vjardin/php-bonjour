@@ -221,7 +221,7 @@ that our extension (dll) will use during its compilation.
 ```dos
 C:\php$ cd c:\php-sdk
 C:\php$ git clone https://github.com/vjardin/php-bonjour.git
-C:\php$ php-bonjour
+C:\php$ cd php-bonjour
 C:\php\php-bonjour$ c:\php\SDK\phpize
 C:\php\php-bonjour$ configure --enable-bonjour
  ...
