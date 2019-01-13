@@ -158,6 +158,13 @@ Regarding [Visual Studio](https://visualstudio.microsoft.com/free-developer-offe
 You need to get `nmake` and the C compiler `cl.exe` including the other tools from Microsoft.
 Once Visual Studio is available, you can open a `ConEmu` tab with `SDK::VS 15.0 x64 tools prompt`.
 
+## step 3.-1 - recompile PHP
+
+This section describes how to recompile PHP and then we'll leverage the environment to build the extension.
+It is not the proper way of building an extension. For intance, for the previous case of Linux, you did
+not recompile PHP before building your `php-bonjour` extesion. I just keep this section as a reminder.
+I advise that you jump to the next section `3.0`.
+
 The following steps are extracted from [Microsoft's PHP]( https://github.com/Microsoft/php-sdk-binary-tools/blob/master/README.md)'s README.
 It will compile a fresh PHP (mine is PHP 7.4) from the main PHP git repository. Then, it will install a minimalist PHP interpretor into
 the folder `c:\php`. Be careful, it make overwrite your existing PHP environment.
@@ -217,6 +224,35 @@ C:\php$ dir SDK /W
 So, we have our `C:\php\SDK\phpize.bat` tool that can be used to generate the Makefile for Windows Visual Studio environment.
 Other folders are important too: `lib` provides the library to link with, `include` provides the C header files
 that our extension (dll) will use during its compilation.
+
+## step 3.0 - Install the php-dev framework for Windows
+
+The official PHP releases for Windows and their respective development packages are available at:
+[https://windows.php.net/downloads/releases/](https://windows.php.net/downloads/releases/).
+A develpment package provides the header files (`.h`) and the tools to build your php extensions (`phpize.bat`, etc.)
+
+First you need to install a [PHP release](https://windows.php.net/downloads/releases/):
+ * either [php-7.3.1-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-7.3.1-Win32-VC15-x64.zip)
+ * or [php-7.3.1-nts-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-7.3.1-nts-Win32-VC15-x64.zip)
+
+Myself, I do prefer to get it from [Chocolatey](https://chocolatey.org/packages/php) PHP packages:
+
+```dos
+C:\php$ choco --params '"/ThreadSafe ""/InstallDir:C:\php"""' install php
+C:\php$ choco --params '"/ThreadSafe ""/InstallDir:C:\php"""' upgrade php
+```
+
+then its respective develoment package:
+[php-devel-pack-7.3.1-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-devel-pack-7.3.1-Win32-VC15-x64.zip)
+[php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip)
+
+You should unzip the proper `php-devel` into `c:\php\SDK\` and you should add a path for `phpize.bat`:
+
+```dos
+set PATH=%PATH%;c:\php\SDK
+```
+
+## step 3.1 - Build `php-bonjour` on Windows
 
 ```dos
 C:\php$ cd c:\php-sdk
