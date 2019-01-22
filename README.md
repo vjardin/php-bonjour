@@ -345,7 +345,8 @@ required.
 Either you install them (thanks to `chocolatey` for instance), or you disable
 them using the hard way from your `configure.js` script:
 
-C:\dev\projects\php-bonjour$ vim configure.js
+`c:\dev\projects\php-bonjour$ vim configure.js`
+
 ```javascript
  ...
 toolset_setup_arch();
