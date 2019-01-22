@@ -158,7 +158,7 @@ Regarding [Visual Studio](https://visualstudio.microsoft.com/free-developer-offe
 You need to get `nmake` and the C compiler `cl.exe` including the other tools from Microsoft.
 Once Visual Studio is available, you can open a `ConEmu` tab with `SDK::VS 15.0 x64 tools prompt`.
 
-## step 3.-1 - recompile PHP
+## step 3.-1 - recompile PHP - SKIP THIS SECTION
 
 This section describes how to recompile PHP and then we'll leverage the environment to build the extension.
 It is not the proper way of building an extension. For intance, for the previous case of Linux, you did
@@ -227,6 +227,12 @@ that our extension (dll) will use during its compilation.
 
 ## step 3.0 - Install the php-dev framework for Windows
 
+There are 2 ways to install the PHP development environment:
+ * using Chcolatey, and assuming that only *one* PHP is installed on your system.
+ * using an handy setup with curl, then having multiple PHP interpreter on your system.
+
+### step 3.0.1 - with Chocolatey
+
 The official PHP releases for Windows and their respective development packages are available at:
 [https://windows.php.net/downloads/releases/](https://windows.php.net/downloads/releases/).
 A develpment package provides the header files (`.h`) and the tools to build your php extensions (`phpize.bat`, etc.)
@@ -252,14 +258,110 @@ You should unzip the proper `php-devel` into `c:\php\SDK\` and you should add a 
 set PATH=%PATH%;c:\php\SDK
 ```
 
+### step 3.0.1 - with curl.exe
+
+The official PHP releases for Windows and their respective development packages are available at:
+[https://windows.php.net/downloads/releases/](https://windows.php.net/downloads/releases/).
+A develpment package provides the header files (`.h`) and the tools to build your php extensions (`phpize.bat`, etc.)
+
+First you need to install a [PHP release](https://windows.php.net/downloads/releases/):
+ * either [php-7.3.1-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-7.3.1-Win32-VC15-x64.zip)
+ * or [php-7.3.1-nts-Win32-VC15-x64.zip](https://windows.php.net/downloads/releases/php-7.3.1-nts-Win32-VC15-x64.zip)
+
+The following can be scripted using `curl.exe`. Sicne I need to check for both NTS and TS releases, I do prefer to have
+both installed.
+
+```dos
+$ mkdir c:\dev
+$ mkdir c:\dev\php
+$ mkdir c:\dev\php\ts
+$ mkdir c:\dev\php\nts
+$ cd \dev\php\nts
+c:\dev\php\nts $ curl https://windows.php.net/downloads/releases/php-7.3.1-nts-Win32-VC15-x64.zip -o php-7.3.1-nts-Win32-VC15-x64.zip
+c:\dev\php\nts $ unzip php-7.3.1-nts-Win32-VC15-x64.zip
+c:\dev\php\nts $ curl https://windows.php.net/downloads/releases/php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip -o php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip
+c:\dev\php\nts $ unzip php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip
+Archive:  php-devel-pack-7.3.1-nts-Win32-VC15-x64.zip
+    creating: php-7.3.1-devel-VC15-x64/
+    creating: php-7.3.1-devel-VC15-x64/build/
+       ...
+$ cd c:\dev\php\ts
+c:\dev\php\ts $ curl https://windows.php.net/downloads/releases/php-7.3.1-Win32-VC15-x64.zip -o php-7.3.1-Win32-VC15-x64.zip
+c:\dev\php\ts $ unzip php-7.3.1-Win32-VC15-x64.zip
+c:\dev\php\ts $ curl https://windows.php.net/downloads/releases/php-devel-pack-7.3.1-Win32-VC15-x64.zip -o php-devel-pack-7.3.1-Win32-VC15-x64.zip
+c:\dev\php\ts $ unzip php-devel-pack-7.3.1-Win32-VC15-x64.zip
+```
+
 ## step 3.1 - Build `php-bonjour` on Windows
 
 ```dos
-C:\php$ cd c:\php-sdk
-C:\php$ git clone https://github.com/vjardin/php-bonjour.git
-C:\php$ cd php-bonjour
-C:\php\php-bonjour$ c:\php\SDK\phpize
-C:\php\php-bonjour$ configure --enable-bonjour
+C:\dev$ mkdir projects
+C:\dev$ cd projects
+C:\dev\projects$ git clone https://github.com/vjardin/php-bonjour.git
+C:\dev\projects$ cd php-bonjour
+```
+
+Then, you are ready to get it compiled. First, you need to setup the build environment for `Microsoft Visual C`:
+
+```dos
+c:\dev\projects\bonjour $ "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+```
+
+then, we have 3 options to setup the path depending on your deployed PHP environment:
+ * `c:\php\php.exe` and `c:\php\SDK\phpize.bat`
+ * `c:\dev\php\nts\php.exe` and `c:\dev\php\nts\php-7.3.1-devel-VC15-x64\phpize.bat`
+ * `c:\dev\php\ts\php.exe`  and  `c:\dev\php\ts\php-7.3.1-devel-VC15-x64\phpize.bat`
+
+For instance, using the `ts` option, you should setup you PATH and PHPRC:
+
+```dos
+$ set PHPRC=c:\dev\php\ts
+$ set PATH=c:\dev\php\ts;c:\dev\php\ts\php-7.3.1-devel-VC15-x64;%PATH%
+```
+
+I advise that you set it up within your `ConEmu`'s tab once for ever.
+
+You can check you `php.exe` and `phpize.bat` to be used with:
+
+```dos
+$ where phpize
+c:\dev\php\ts\php-7.3.1-devel-VC15-x64\phpize.bat
+
+$ where php
+c:\dev\php\ts\php.exe
+c:\tools\php72\php.exe
+```
+
+Build the Makefile for your PHP module using `phpize`:
+
+```dos
+C:\dev\projects\php-bonjour$ phpize
+```
+
+Then, you are ready to compile using the command
+`configure --with-php=%PHPRC% --enable-bonjour`
+but configure will need tools like `bison`, `sed` or `re2c` which are not
+required.
+Either you install them (thanks to `chocolatey` for instance), or you disable
+them using the hard way from your `configure.js` script:
+
+C:\dev\projects\php-bonjour$ vim configure.js
+```javascript
+ ...
+toolset_setup_arch();
+
+toolset_setup_linker();
+//toolset_setup_project_tools(); TODO comment it, no need for bison, neither re2c, etc.
+
+// stick objects somewhere outside of the source tree
+/* ARG_ENABLE('object-out-dir', 'Alternate location for binary objects during build', ''); */
+ ...
+```
+
+Then, you are ready to compile:
+
+```dos
+php-bonjour$ configure --with-php=%PHPRC% --enable-bonjour
  ...
 Enabled extensions:
 ----------------------
@@ -280,8 +382,8 @@ Enabled extensions:
 | Static analyzer   | disabled                 |
 ------------------------------------------------
  ...
-C:\php\php-bonjour$ nmake
-C:\php\php-bonjour$ nmake test
+php-bonjour$ nmake
+php-bonjour$ nmake test
 =====================================================================
 TIME START 2019-01-01 22:29:40
 =====================================================================
@@ -307,28 +409,57 @@ Tests passed    :    3 (100.0%) (100.0%)
 ---------------------------------------------------------------------
 Time taken      :    0 seconds
 =====================================================================
-C:\php\php-bonjour$ nmake install
 ```
 
 Then, you can run some manual tests using both PHP functions that are provided by the `php_bonjour.dll` extension:
 
 ```dos
-C:\php-sdk\php-bonjour$ nmake run
+php-bonjour$ nmake run
 
 Microsoft (R) Program Maintenance Utility Version 14.16.27025.1
-Copyright (C) Microsoft Corporation. Tous droits réservés.
+Copyright (C) Microsoft Corporation. Tous droits reserves.
 
-          "C:\php\php.exe" -n -d extension=C:\php-sdk\php-bonjour\x64\Release_TS\\php_bonjour.dll
+          "C:\dev\ts\php\php.exe" -n -d extension=C:\dev\projects\php-bonjour\x64\Release_TS\\php_bonjour.dll
 <?php
 bonjour_test1();
 ^Z
 The extension bonjour is loaded and working!
 ```
 
-or assuming you are using your production environment,
+If you face any issues, you can check that all system depencies are properly installed:
+```dos
+php-bonjour$ deplister x64\Release_TS\php_bonjour.dll
+php7ts.dll,OK
+VCRUNTIME140.dll,OK
+api-ms-win-crt-runtime-l1-1-0.dll,OK
+KERNEL32.dll,OK
+```
+
+This new `php_bonjour.dll` can be released with your `.msi` or any other means. Currently,
+we'll only release it for the local system:
 
 ```dos
-C:\$ c:\php\php.exe -n -d extension=c:\php\ext\php_bonjour.dll
+php-bonjour$ nmake install
+```
+
+# Usage, special notes for Windows
+
+On any production or development system, you can have fun with you `php_bonjour.dll` using:
+
+```dos
+c:\$ php -n -c %PHPRC%\php.ini-development -d extension_dir=%PHPRC%\ext -d extension=bonjour -m | findstr bonjour
+c:\$ php -n -c %PHPRC%\php.ini-development -d extension_dir=%PHPRC%\ext -d extension=bonjour -a
+
+Interactive shell
+php > bonjour_test1();
+The extension bonjour is loaded and working!
+php > bonjo[tab]
+```
+
+or
+
+```dos
+c:\$ php -n -c %PHPRC%\php.ini-development -d extension_dir=%PHPRC%\ext -d extension=bonjour
 <?php
 echo bonjour_test2("la Terre");
 ^Z[enter]
@@ -431,5 +562,5 @@ string(9) "Hello PHP"
 of course, on Windows, you have to adapt it a bit:
 
 ```dos
-C:\$ c:\php\php.exe -n -d extension=x64\Release_TS\php_bonjour.dll -f "tests\003.php"
+C:\$ php.exe -n -d extension=x64\Release_TS\php_bonjour.dll -f "tests\003.php"
 ```
