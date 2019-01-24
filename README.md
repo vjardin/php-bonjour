@@ -244,8 +244,8 @@ First you need to install a [PHP release](https://windows.php.net/downloads/rele
 Myself, I do prefer to get it from [Chocolatey](https://chocolatey.org/packages/php) PHP packages:
 
 ```dos
-C:\php$ choco --params '"/ThreadSafe ""/InstallDir:C:\php"""' install php
-C:\php$ choco --params '"/ThreadSafe ""/InstallDir:C:\php"""' upgrade php
+C:\php$ choco install php --params '"/ThreadSafe ""/InstallDir:C:\php"""'
+C:\php$ choco upgrade php --params '"/ThreadSafe ""/InstallDir:C:\php"""'
 ```
 
 then its respective develoment package:
