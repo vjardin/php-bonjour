@@ -255,7 +255,7 @@ then its respective develoment package:
 You should unzip the proper `php-devel` into `c:\php\SDK\` and you should add a path for `phpize.bat`:
 
 ```dos
-set PATH=%PATH%;c:\php\SDK
+set PATH=%PATH%;"c:\php\SDK"
 ```
 
 ### step 3.0.1 - with curl.exe
