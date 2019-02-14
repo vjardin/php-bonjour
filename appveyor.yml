@@ -1,0 +1,45 @@
+version: '{branch}.{build}'
+
+environment:
+  PHP_BUILD_CACHE_BASE_DIR: c:\build-cache
+  PHP_BUILD_OBJ_DIR: c:\obj
+  PHP_BUILD_CACHE_SDK_DIR: c:\build-cache\sdk
+  PHP_BUILD_SDK_BRANCH: php-sdk-2.1.9
+  SDK_REMOTE: https://github.com/Microsoft/php-sdk-binary-tools.git
+  SDK_BRANCH: php-sdk-2.1.9
+
+matrix:
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#    PHP_REL: 7.0
+#    ZTS_STATES: enable disable
+#    PHP_BUILD_CRT: vc14
+#  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2015
+#    PHP_REL: 7.1
+#    ZTS_STATES: enable disable
+#    PHP_BUILD_CRT: vc14
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    PHP_REL: 7.2
+    ZTS_STATES: enable disable
+    PHP_BUILD_CRT: vc15
+  - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    PHP_REL: 7.3
+    ZTS_STATES: enable disable
+    PHP_BUILD_CRT: vc15
+
+platform:
+  - x86
+  - x64
+
+install:
+  - appveyor\install.cmd
+
+build_script:
+  - appveyor\build.cmd
+
+test_script:
+  - appveyor\test.bat
+
+artifacts:
+  - path: artifacts
+    name: php_bonjour-%APPVEYOR_REPO_TAG_NAME%-%PHP_REL%
+    type: zip
