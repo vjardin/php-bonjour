@@ -362,7 +362,7 @@ toolset_setup_linker();
 Then, you are ready to compile:
 
 ```dos
-php-bonjour$ configure --with-php=%PHPRC% --enable-bonjour
+php-bonjour$ configure --with-prefix=%PHPRC% --enable-bonjour
  ...
 Enabled extensions:
 ----------------------
