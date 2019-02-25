@@ -59,6 +59,106 @@ PHP_FUNCTION(bonjour_test2)
 }
 /* }}}*/
 
+/* {{{ string bonjour_array1( array $arg1, array $arg2 )
+ */
+PHP_FUNCTION(bonjour_array1)
+{
+	zval *arg1, *arg2;
+	zend_string *key;
+	zval *value;
+	zend_long h;
+	char str[BUFSIZ] = "";
+
+	ZEND_PARSE_PARAMETERS_START(2, 2)
+		Z_PARAM_ARRAY(arg1)
+		Z_PARAM_ARRAY(arg2)
+	ZEND_PARSE_PARAMETERS_END();
+
+	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(arg1), h, key, value) {
+		if (Z_TYPE_P(value) != IS_STRING) {
+			php_printf("%s:%d key[%d]=%s value=Invalid String\n", __func__, __LINE__, (int)h, key ? ZSTR_VAL(key): "NULL");
+			continue;
+		}
+		php_printf("%s:%d key[%d]=%s value=%s\n", __func__, __LINE__, (int)h, key ? ZSTR_VAL(key): "NULL", Z_STRVAL_P(value));
+		ZVAL_DEREF(value);
+		strcat(str, Z_STRVAL_P(value)); /* TODO use strlcat() */
+	} ZEND_HASH_FOREACH_END();
+
+	ZVAL_NEW_STR(return_value, zend_string_init(str, strlen(str)+1, 0));
+
+	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(arg2), h, key, value) {
+		if (Z_TYPE_P(value) != IS_STRING) {
+			php_printf("%s:%d key[%d]=%s value=Invalid String\n", __func__, __LINE__, (int)h, key ? ZSTR_VAL(key): "NULL");
+			continue;
+		}
+		php_printf("%s:%d key[%d]=%s value=%s\n", __func__, __LINE__, (int)h, key ? ZSTR_VAL(key): "NULL", Z_STRVAL_P(value));
+		ZVAL_DEREF(value);
+		strcat(str, Z_STRVAL_P(value)); /* TODO use strlcat() */
+	} ZEND_HASH_FOREACH_END();
+
+	if (strlen(str) <= 1) {
+		RETURN_EMPTY_STRING();
+		return;
+	}
+
+	ZVAL_NEW_STR(return_value, zend_string_init(str, strlen(str)+1, 0));
+	return;
+}
+/* }}}*/
+
+/* {{{ array bonjour_array2( array $arg1, string $arg2[, bool $associative] )
+ */
+PHP_FUNCTION(bonjour_array2)
+{
+	zval *arg1;
+	zend_string *arg2;
+	zend_bool associative = 0;
+
+	zend_string *key;
+	zval *value;
+	zend_long h;
+
+	char str_value[BUFSIZ];
+
+	ZEND_PARSE_PARAMETERS_START(2, 3)
+		Z_PARAM_ARRAY(arg1)
+		Z_PARAM_STR(arg2)
+		Z_PARAM_OPTIONAL
+		Z_PARAM_BOOL(associative)
+	ZEND_PARSE_PARAMETERS_END();
+
+	array_init(return_value); /* zval *return_value */
+
+	if (associative) {
+		char str_key[BUFSIZ];
+		int i = 0;
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(arg1), h, key, value) {
+			if (Z_TYPE_P(value) != IS_STRING)
+				continue;
+			snprintf(str_key, sizeof(str_key), "%s-%d", ZSTR_VAL(arg2), i);
+			snprintf(str_value, sizeof(str_value), "%s-%d", Z_STRVAL_P(value), i);
+			ZVAL_DEREF(value);
+			/* return_value[str_key] = str_value; */
+			add_assoc_stringl(return_value, str_key, str_value, strlen(str_value));
+			i++;
+		} ZEND_HASH_FOREACH_END();
+	} else {
+		int i = 0;
+		ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(arg1), h, key, value) {
+			if (Z_TYPE_P(value) != IS_STRING)
+				continue;
+			snprintf(str_value, sizeof(str_value), "%s-%d", Z_STRVAL_P(value), i);
+			ZVAL_DEREF(value);
+			/* return_value[i] = str_value; */
+			add_index_stringl(return_value, i, str_value, strlen(str_value));
+			i++;
+		} ZEND_HASH_FOREACH_END();
+	}
+
+	return;
+}
+/* }}}*/
+
 /* {{{ PHP_RINIT_FUNCTION
  */
 PHP_RINIT_FUNCTION(bonjour)
@@ -89,6 +189,17 @@ ZEND_END_ARG_INFO()
 ZEND_BEGIN_ARG_INFO(arginfo_bonjour_test2, 0)
 	ZEND_ARG_INFO(0, str)
 ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_bonjour_array1_return, IS_STRING, 0)
+	ZEND_ARG_ARRAY_INFO(0, arg1, 0)
+	ZEND_ARG_ARRAY_INFO(0, arg2, 0)
+ZEND_END_ARG_INFO()
+
+ZEND_BEGIN_ARG_WITH_RETURN_TYPE_INFO(arginfo_bonjour_array2_return, IS_ARRAY, 0)
+	ZEND_ARG_ARRAY_INFO(0, arg1, 0)
+	ZEND_ARG_TYPE_INFO(0, arg2, IS_STRING, 0)
+	ZEND_ARG_TYPE_INFO(0, associative, _IS_BOOL, 0)
+ZEND_END_ARG_INFO()
 /* }}} */
 
 /* {{{ bonjour_functions[]
@@ -96,6 +207,8 @@ ZEND_END_ARG_INFO()
 static const zend_function_entry bonjour_functions[] = {
 	PHP_FE(bonjour_test1,		arginfo_bonjour_test1)
 	PHP_FE(bonjour_test2,		arginfo_bonjour_test2)
+	PHP_FE(bonjour_array1,		arginfo_bonjour_array1_return)
+	PHP_FE(bonjour_array2,		arginfo_bonjour_array2_return)
 	PHP_FE_END
 };
 /* }}} */
