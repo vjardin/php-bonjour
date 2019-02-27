@@ -74,6 +74,8 @@ PHP_FUNCTION(bonjour_array1)
 		Z_PARAM_ARRAY(arg2)
 	ZEND_PARSE_PARAMETERS_END();
 
+	php_printf("Array size arg1=%d" PHP_EOL, zend_hash_num_elements(Z_ARRVAL_P(arg1)));
+
 	ZEND_HASH_FOREACH_KEY_VAL(Z_ARRVAL_P(arg1), h, key, value) {
 		if (Z_TYPE_P(value) != IS_STRING) {
 			php_printf("%s:%d key[%d]=%s value=Invalid String\n", __func__, __LINE__, (int)h, key ? ZSTR_VAL(key): "NULL");
