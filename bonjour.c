@@ -122,6 +122,8 @@ PHP_FUNCTION(bonjour_array2)
 
 	char str_value[BUFSIZ];
 
+	int k;
+
 	ZEND_PARSE_PARAMETERS_START(2, 3)
 		Z_PARAM_ARRAY(arg1)
 		Z_PARAM_STR(arg2)
@@ -130,6 +132,11 @@ PHP_FUNCTION(bonjour_array2)
 	ZEND_PARSE_PARAMETERS_END();
 
 	array_init(return_value); /* zval *return_value */
+
+	for (k = 0; k < 5; k++) {
+		zval zva;
+
+		array_init(&zva);
 
 	if (associative) {
 		char str_key[BUFSIZ];
@@ -141,7 +148,7 @@ PHP_FUNCTION(bonjour_array2)
 			snprintf(str_value, sizeof(str_value), "%s-%d", Z_STRVAL_P(value), i);
 			ZVAL_DEREF(value);
 			/* return_value[str_key] = str_value; */
-			add_assoc_stringl(return_value, str_key, str_value, strlen(str_value));
+			add_assoc_stringl(&zva, str_key, str_value, strlen(str_value));
 			i++;
 		} ZEND_HASH_FOREACH_END();
 	} else {
@@ -152,9 +159,12 @@ PHP_FUNCTION(bonjour_array2)
 			snprintf(str_value, sizeof(str_value), "%s-%d", Z_STRVAL_P(value), i);
 			ZVAL_DEREF(value);
 			/* return_value[i] = str_value; */
-			add_index_stringl(return_value, i, str_value, strlen(str_value));
+			add_index_stringl(&zva, i, str_value, strlen(str_value));
 			i++;
 		} ZEND_HASH_FOREACH_END();
+	}
+
+	add_index_zval(return_value, k, &zva);
 	}
 
 	return;
